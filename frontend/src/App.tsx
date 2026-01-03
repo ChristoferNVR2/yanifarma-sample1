@@ -7,7 +7,7 @@ import { CreateUser } from './components/CreateUser.tsx';
 function App() {
 	const [users, setUsers] = useState<User[]>([]);
 	useEffect(() => {
-		fetch('http://172.21.0.3:8000/api/users')
+		fetch('http://localhost:8000/api/usuarios')
 			.then(response => response.json())
 			.then((data: User[]) => setUsers(data))
 			.catch(error => console.error('Error fetching users:', error));

@@ -1,61 +1,319 @@
-# Yanifarma Sample1
+# 🏥 Yanifarma - Sistema de Gestión de Farmacia
 
-A full-stack application with FastAPI backend, React + TypeScript frontend, and MySQL database, all containerized with Docker.
+Sistema completo de gestión para farmacias con FastAPI, React y MySQL.
 
-## Prerequisites
-
-- Docker and Docker Compose installed
-- Git
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 yanifarma-sample1/
-├── backend/              # FastAPI application
-│   ├── app/             # Application modules
-│   │   ├── app.py       # Main FastAPI app
-│   │   ├── crud.py      # Database operations
-│   │   ├── database.py  # Database configuration
-│   │   ├── models.py    # SQLAlchemy models
-│   │   └── schemas.py   # Pydantic schemas
-│   ├── main.py          # Entry point
-│   ├── Dockerfile       # Backend container config
-│   └── pyproject.toml   # Python dependencies (uv)
-├── frontend/            # React + TypeScript application
-│   ├── src/            
-│   │   ├── components/  # React components
-│   │   ├── App.tsx      # Main app component
-│   │   └── main.tsx     # Entry point
-│   ├── Dockerfile       # Frontend container config
-│   └── package.json     # Node dependencies
-└── docker-compose.yml   # Docker orchestration
+├── backend/                   # FastAPI Backend
+│   ├── app/
+│   │   ├── models/           # 27 database tables (3NF)
+│   │   ├── schemas.py        # Pydantic models
+│   │   ├── crud.py           # Database operations
+│   │   ├── app.py            # FastAPI app (60+ endpoints)
+│   │   └── database.py       # DB configuration
+│   ├── init_database.py      # Database setup script
+│   ├── test_api.py           # API test script
+│   └── main.py               # Entry point
+│
+├── frontend/                  # React Frontend
+├── docker-compose.yml         # Docker orchestration
+└── README.md                  # This file
 ```
 
-## Getting Started
+## 🚀 Quick Start
 
-### 1. Clone the Repository
+### 1. Start Docker Containers
 
 ```bash
-git clone https://github.com/ChristoferNVR2/yanifarma-sample1
-cd yanifarma-sample1
+docker-compose up -d
 ```
 
-### 2. Create the Docker Network
+This starts:
+- **MySQL Database** (port 3306)
+- **FastAPI Backend** (port 8000)
+- **React Frontend** (port 5173)
+
+### 2. Initialize Database
+
+Wait a few seconds for the database to be ready, then:
 
 ```bash
-docker network create yanifarma-sample1
+docker exec backend uv run python init_database.py
 ```
 
-### 3. Configure Environment Variables
+This will:
+- ✓ Create all 27 tables
+- ✓ Populate 100+ sample records
+- ✓ Verify data was loaded correctly
 
-Create a `.env` file in the `backend` directory:
+### 3. Test API Endpoints
 
 ```bash
-touch backend/.env
+docker exec backend uv run python test_api.py
 ```
 
-Add your database configuration to `backend/.env`:
+This tests all 40+ endpoints to ensure everything works.
 
+### 4. Access the API
+
+Open in your browser:
+- **Interactive API Docs**: http://localhost:8000/docs
+- **Alternative Docs**: http://localhost:8000/redoc
+
+---
+
+## 📊 Database
+
+**27 Tables** organized in Third Normal Form (3NF):
+
+| Category | Tables |
+|----------|--------|
+| **User Management** | rol, usuario, usuario_rol |
+| **Customer Management** | cliente, cliente_telefono |
+| **Supplier Management** | proveedor, contacto_proveedor, cargo |
+| **Product Catalog** | producto, categoria, presentacion, componente, + junction tables |
+| **Inventory** | inventario, lote, ubicacion_estante |
+| **Purchasing** | pedido, detalle_pedido, compra, estado_pedido, motivo_pedido |
+| **Sales** | venta, detalle_venta, pago, metodo_pago, comprobante |
+
+## 🔌 API Endpoints (60+)
+
+### Main Endpoints
+
+| Resource | Endpoints |
+|----------|-----------|
+| **Usuarios** | `GET, POST, PUT, DELETE /api/usuarios/` |
+| **Clientes** | `GET, POST, PUT, DELETE /api/clientes/` |
+| **Proveedores** | `GET, POST, PUT, DELETE /api/proveedores/` |
+| **Productos** | `GET, POST, PUT, DELETE /api/productos/` |
+| **Inventario** | `GET, POST, PATCH /api/inventario/` |
+| **Pedidos** | `GET, POST, PATCH /api/pedidos/` |
+| **Ventas** | `GET, POST /api/ventas/` |
+
+**See full API documentation**: http://localhost:8000/docs
+
+## 🧪 Manual Testing
+
+### Test with curl
+
+```bash
+# Get all users
+curl http://localhost:8000/api/usuarios/
+
+# Get all products
+curl http://localhost:8000/api/productos/
+
+# Search products
+curl "http://localhost:8000/api/productos/search/?q=Paracetamol"
+
+# Get all sales
+curl http://localhost:8000/api/ventas/
+
+# Get specific user
+curl http://localhost:8000/api/usuarios/1005
+```
+
+### Create Operations
+
+```bash
+# Create a new customer
+curl -X POST http://localhost:8000/api/clientes/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nro_doc": "12345678",
+    "tipo_doc": "DNI",
+    "nombres": "Juan",
+    "apellido_paterno": "Pérez",
+    "apellido_materno": "García",
+    "correo": "juan@email.com",
+    "telefonos": ["987654321"]
+  }'
+
+# Create a sale
+curl -X POST http://localhost:8000/api/ventas/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_cliente": 10009,
+    "detalles": [
+      {
+        "id_producto": 4001,
+        "cantidad": 2,
+        "precio_unitario_venta": 3.50
+      }
+    ],
+    "id_metodo_pago": 800001,
+    "tipo_comprobante": "Boleta",
+    "nro_comprobante": "B001-999999"
+  }'
+```
+
+## 🔧 Development
+
+### View Logs
+
+```bash
+# Backend logs
+docker logs backend -f
+
+# Database logs
+docker logs fa-db -f
+
+# All services
+docker-compose logs -f
+```
+
+### Access Containers
+
+```bash
+# Backend shell
+docker exec -it backend bash
+
+# MySQL shell
+docker exec -it fa-db mysql -u root -p123456 test
+```
+
+### Container Management
+
+```bash
+# Stop containers
+docker-compose down
+
+# Restart containers
+docker-compose restart
+
+# Rebuild backend
+docker-compose up --build -d backend
+
+# View container status
+docker-compose ps
+```
+
+### Database Access
+
+```bash
+# Access MySQL CLI
+docker exec -it fa-db mysql -u root -p123456 test
+
+# Inside MySQL:
+SHOW TABLES;
+SELECT * FROM usuario;
+SELECT * FROM producto;
+SELECT * FROM venta;
+```
+
+## 📝 Sample Data
+
+After running `init_database.py`, you'll have:
+
+- **2 Users**: jackyfarma (admin), malca (empleado)
+- **3 Customers**: With contact information
+- **2 Suppliers**: With company contacts
+- **4 Products**: Paracetamol, Amoxicilina, Ibuprofeno, Loratadina
+- **4 Inventory Batches**: With expiration dates and locations
+- **2 Purchase Orders**: One completed, one in progress
+- **3 Sales Transactions**: With payments and receipts
+
+## 🔄 Reset Database
+
+If you need to start fresh:
+
+```bash
+# Stop containers
+docker-compose down
+
+# Remove database volume (WARNING: deletes all data!)
+docker volume rm yanifarma-sample1_mysql_data
+
+# Start containers again
+docker-compose up -d
+
+# Wait for database to be ready (5-10 seconds)
+sleep 10
+
+# Reinitialize
+docker exec backend uv run python init_database.py
+```
+
+## 🐛 Troubleshooting
+
+### Containers won't start
+
+```bash
+# Check status
+docker-compose ps
+
+# View logs
+docker-compose logs backend
+docker-compose logs fa-db
+
+# Restart
+docker-compose restart
+```
+
+### Database connection issues
+
+Verify `.env` configuration:
+```
+DB_HOST=database    # Must be 'database' (container name), not 'localhost'
+DB_NAME=test
+DB_USER=root
+DB_PASSWORD=123456
+```
+
+### API returns errors
+
+```bash
+# Check if database is initialized
+docker exec -it fa-db mysql -u root -p123456 test -e "SHOW TABLES;"
+
+# If no tables, run:
+docker exec backend uv run python init_database.py
+```
+
+### Port already in use
+
+```bash
+# Find what's using port 8000
+lsof -i :8000
+
+# Or change port in docker-compose.yml
+ports:
+  - "8001:8000"  # Use port 8001 on host instead
+```
+
+### Module not found errors
+
+```bash
+# Rebuild container with latest dependencies
+docker-compose up --build -d backend
+```
+
+## ✅ Verification Checklist
+
+Before starting development, verify:
+
+- [ ] Containers running: `docker-compose ps`
+- [ ] Backend accessible: `curl http://localhost:8000/`
+- [ ] Database accessible: `docker exec -it fa-db mysql -u root -p123456 test`
+- [ ] Tables created: Run `init_database.py`
+- [ ] Data loaded: `curl http://localhost:8000/api/usuarios/`
+- [ ] Endpoints working: Run `test_api.py`
+- [ ] API docs accessible: http://localhost:8000/docs
+
+## 🎯 Next Steps
+
+1. ✅ Backend API is ready
+2. ✅ Database populated with sample data
+3. ⏳ Connect React frontend to the API
+4. ⏳ Add authentication (JWT)
+5. ⏳ Implement business logic
+6. ⏳ Deploy to production
+
+## 💻 Environment Configuration
+
+`.env` file (already configured):
 ```env
 DB_NAME=test
 DB_HOST=database
@@ -64,133 +322,38 @@ DB_DIALECT=mysql+pymysql
 DB_USER=root
 ```
 
-### 4. Run the Application
+## 🌐 Access Points
 
-From the root directory, build and start all services:
+| Service | URL | Port |
+|---------|-----|------|
+| API Documentation | http://localhost:8000/docs | 8000 |
+| API Endpoints | http://localhost:8000/api/ | 8000 |
+| Frontend | http://localhost:5173 | 5173 |
+| MySQL | localhost | 3306 |
 
-```bash
-docker-compose up --build
-```
+## 👥 Team
 
-For running in detached mode (background):
+- **Course**: Base de Datos II
+- **Institution**: Universidad Nacional de Trujillo
+- **Students**: Abanto, Perez, Vega, Lujan
 
-```bash
-docker-compose up -d --build
-```
+---
 
-The services will be available at:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8000
-- **API Documentation (Swagger)**: http://localhost:8000/docs
-- **MySQL Database**: localhost:3306
-
-### 5. View Logs
-
-To view logs from all services:
+**Quick Reference Commands:**
 
 ```bash
-docker-compose logs -f
-```
+# Start everything
+docker-compose up -d
 
-To view logs from a specific service:
+# Initialize database
+docker exec backend uv run python init_database.py
 
-```bash
-docker-compose logs -f backend
-docker-compose logs -f frontend
-docker-compose logs -f database
-```
+# Test API
+docker exec backend uv run python test_api.py
 
-### 6. Stop the Application
+# View logs
+docker logs backend -f
 
-To stop all containers:
-
-```bash
+# Stop everything
 docker-compose down
 ```
-
-To stop and remove volumes (this will delete the database data):
-
-```bash
-docker-compose down -v
-```
-
-## Development
-
-### Hot Reloading
-
-The application uses volume mounts for hot-reloading during development:
-- Backend: Changes to Python files will trigger automatic reload via uvicorn
-- Frontend: Changes to React/TypeScript files will trigger Vite's HMR (Hot Module Replacement)
-
-### Backend Development
-
-The backend uses:
-- **FastAPI**: Modern Python web framework
-- **SQLAlchemy**: ORM for database operations
-- **Pydantic**: Data validation using Python type annotations
-- **uv**: Fast Python package installer and resolver
-- **MySQL**: Database
-
-Dependencies are managed through `pyproject.toml` and installed automatically via the Dockerfile.
-
-### Frontend Development
-
-The frontend uses:
-- **React 18**: UI library
-- **TypeScript**: Type-safe JavaScript
-- **Vite**: Fast build tool and dev server
-- **npm**: Package manager
-
-Dependencies are managed through `package.json` and installed automatically via the Dockerfile.
-
-## Database
-
-The MySQL database uses a named Docker volume (`mysql_data`) to persist data between container restarts. This ensures your data is not lost when containers are stopped or recreated.
-
-The database is automatically initialized with the `test` database on first run.
-
-## API Endpoints
-
-Once the backend is running, you can explore the API at:
-- Interactive API docs: http://localhost:8000/docs
-- Alternative API docs: http://localhost:8000/redoc
-
-## Troubleshooting
-
-### Port Already in Use
-
-If you get port conflict errors, make sure no other services are running on ports 3306, 5173, or 8000.
-
-### Database Connection Issues
-
-If the backend can't connect to the database:
-1. Ensure the database service is healthy: `docker-compose ps`
-2. Check the logs: `docker-compose logs database`
-3. Verify the `.env` file in the backend directory has correct credentials
-
-### Network Not Found
-
-If you get a "network not found" error:
-```bash
-docker network create yanifarma-sample1
-```
-
-### Starting Fresh
-
-To completely reset the application and database:
-```bash
-docker-compose down -v
-docker-compose up --build
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
