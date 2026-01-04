@@ -236,6 +236,14 @@ def create_categoria(categoria: schemas.CategoriaCreate, db: Session = Depends(g
     return crud.create_categoria(db, categoria)
 
 
+@app.delete("/api/categorias/{categoria_id}")
+def delete_categoria(categoria_id: int, db: Session = Depends(get_db)):
+    db_categoria = crud.delete_categoria(db, categoria_id)
+    if not db_categoria:
+        raise HTTPException(status_code=404, detail="Categoría no encontrada")
+    return {"message": "Categoría eliminada"}
+
+
 # ==================== PRESENTACIONES ====================
 @app.get("/api/presentaciones/", response_model=List[schemas.Presentacion])
 def get_presentaciones(db: Session = Depends(get_db)):
@@ -247,6 +255,14 @@ def create_presentacion(presentacion: schemas.PresentacionCreate, db: Session = 
     return crud.create_presentacion(db, presentacion)
 
 
+@app.delete("/api/presentaciones/{presentacion_id}")
+def delete_presentacion(presentacion_id: int, db: Session = Depends(get_db)):
+    db_presentacion = crud.delete_presentacion(db, presentacion_id)
+    if not db_presentacion:
+        raise HTTPException(status_code=404, detail="Presentación no encontrada")
+    return {"message": "Presentación eliminada"}
+
+
 # ==================== COMPONENTES ====================
 @app.get("/api/componentes/", response_model=List[schemas.Componente])
 def get_componentes(db: Session = Depends(get_db)):
@@ -256,6 +272,14 @@ def get_componentes(db: Session = Depends(get_db)):
 @app.post("/api/componentes/", response_model=schemas.Componente, status_code=201)
 def create_componente(componente: schemas.ComponenteCreate, db: Session = Depends(get_db)):
     return crud.create_componente(db, componente)
+
+
+@app.delete("/api/componentes/{componente_id}")
+def delete_componente(componente_id: int, db: Session = Depends(get_db)):
+    db_componente = crud.delete_componente(db, componente_id)
+    if not db_componente:
+        raise HTTPException(status_code=404, detail="Componente no encontrado")
+    return {"message": "Componente eliminado"}
 
 
 # ==================== INVENTARIO ====================

@@ -272,6 +272,9 @@ def delete_producto(db: Session, producto_id: int):
 def get_categorias(db: Session):
     return db.query(Categoria).all()
 
+def get_categoria(db: Session, categoria_id: int):
+    return db.query(Categoria).filter(Categoria.id_categoria == categoria_id).first()
+
 def create_categoria(db: Session, categoria: schemas.CategoriaCreate):
     db_categoria = Categoria(**categoria.model_dump())
     db.add(db_categoria)
@@ -279,10 +282,20 @@ def create_categoria(db: Session, categoria: schemas.CategoriaCreate):
     db.refresh(db_categoria)
     return db_categoria
 
+def delete_categoria(db: Session, categoria_id: int):
+    db_categoria = get_categoria(db, categoria_id)
+    if db_categoria:
+        db.delete(db_categoria)
+        db.commit()
+    return db_categoria
+
 
 # ==================== PRESENTACION ====================
 def get_presentaciones(db: Session):
     return db.query(Presentacion).all()
+
+def get_presentacion(db: Session, presentacion_id: int):
+    return db.query(Presentacion).filter(Presentacion.id_presentacion == presentacion_id).first()
 
 def create_presentacion(db: Session, presentacion: schemas.PresentacionCreate):
     db_presentacion = Presentacion(**presentacion.model_dump())
@@ -291,16 +304,33 @@ def create_presentacion(db: Session, presentacion: schemas.PresentacionCreate):
     db.refresh(db_presentacion)
     return db_presentacion
 
+def delete_presentacion(db: Session, presentacion_id: int):
+    db_presentacion = get_presentacion(db, presentacion_id)
+    if db_presentacion:
+        db.delete(db_presentacion)
+        db.commit()
+    return db_presentacion
+
 
 # ==================== COMPONENTE ====================
 def get_componentes(db: Session):
     return db.query(Componente).all()
+
+def get_componente(db: Session, componente_id: int):
+    return db.query(Componente).filter(Componente.id_componente == componente_id).first()
 
 def create_componente(db: Session, componente: schemas.ComponenteCreate):
     db_componente = Componente(**componente.model_dump())
     db.add(db_componente)
     db.commit()
     db.refresh(db_componente)
+    return db_componente
+
+def delete_componente(db: Session, componente_id: int):
+    db_componente = get_componente(db, componente_id)
+    if db_componente:
+        db.delete(db_componente)
+        db.commit()
     return db_componente
 
 
