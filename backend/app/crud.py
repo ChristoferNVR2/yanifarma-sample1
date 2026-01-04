@@ -336,13 +336,72 @@ def delete_componente(db: Session, componente_id: int):
 
 # ==================== INVENTARIO ====================
 def get_inventarios(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Inventario).offset(skip).limit(limit).all()
+    inventarios = db.query(Inventario).offset(skip).limit(limit).all()
+
+    # Build enhanced response
+    result = []
+    for inv in inventarios:
+        lote = db.query(Lote).filter(Lote.id_lote == inv.id_lote).first()
+        ubicacion = db.query(UbicacionEstante).filter(
+            UbicacionEstante.id_ubicacion_estante == inv.id_ubicacion_estante
+        ).first()
+
+        if lote and ubicacion:
+            result.append({
+                "id_inventario": inv.id_inventario,
+                "stock_actual": inv.stock_actual,
+                "codigo_lote": lote.codigo_lote,
+                "fecha_vencimiento": lote.fecha_vencimiento,
+                "precio_compra_unitario": lote.costo_unitario_compra,
+                "ubicacion_estante": f"{ubicacion.estante}-{ubicacion.nivel}"
+            })
+
+    return result
+
 
 def get_inventario(db: Session, inventario_id: int):
-    return db.query(Inventario).filter(Inventario.id_inventario == inventario_id).first()
+    inv = db.query(Inventario).filter(Inventario.id_inventario == inventario_id).first()
+    if not inv:
+        return None
+
+    lote = db.query(Lote).filter(Lote.id_lote == inv.id_lote).first()
+    ubicacion = db.query(UbicacionEstante).filter(
+        UbicacionEstante.id_ubicacion_estante == inv.id_ubicacion_estante
+    ).first()
+
+    if lote and ubicacion:
+        return {
+            "id_inventario": inv.id_inventario,
+            "stock_actual": inv.stock_actual,
+            "codigo_lote": lote.codigo_lote,
+            "fecha_vencimiento": lote.fecha_vencimiento,
+            "precio_compra_unitario": lote.costo_unitario_compra,
+            "ubicacion_estante": f"{ubicacion.estante}-{ubicacion.nivel}"
+        }
+    return None
+
 
 def get_inventario_by_producto(db: Session, producto_id: int):
-    return db.query(Inventario).join(Lote).filter(Lote.id_producto == producto_id).all()
+    inventarios = db.query(Inventario).join(Lote).filter(Lote.id_producto == producto_id).all()
+
+    result = []
+    for inv in inventarios:
+        lote = db.query(Lote).filter(Lote.id_lote == inv.id_lote).first()
+        ubicacion = db.query(UbicacionEstante).filter(
+            UbicacionEstante.id_ubicacion_estante == inv.id_ubicacion_estante
+        ).first()
+
+        if lote and ubicacion:
+            result.append({
+                "id_inventario": inv.id_inventario,
+                "stock_actual": inv.stock_actual,
+                "codigo_lote": lote.codigo_lote,
+                "fecha_vencimiento": lote.fecha_vencimiento,
+                "precio_compra_unitario": lote.costo_unitario_compra,
+                "ubicacion_estante": f"{ubicacion.estante}-{ubicacion.nivel}"
+            })
+
+    return result
 
 def create_inventario(db: Session, inventario: schemas.InventarioCreate):
     db_inventario = Inventario(**inventario.model_dump())

@@ -212,8 +212,21 @@ class InventarioCreate(InventarioBase):
 class InventarioUpdate(BaseModel):
     stock_actual: int
 
-class Inventario(InventarioBase):
+# Simple version (for create/update)
+class InventarioSimple(InventarioBase):
     id_inventario: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Enhanced version with relationships (for list/get)
+class Inventario(BaseModel):
+    id_inventario: int
+    stock_actual: int
+    codigo_lote: str
+    fecha_vencimiento: date
+    precio_compra_unitario: Decimal
+    ubicacion_estante: str
+
     model_config = ConfigDict(from_attributes=True)
 
 
