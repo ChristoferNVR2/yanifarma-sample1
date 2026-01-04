@@ -453,7 +453,54 @@ def get_pedidos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Pedido).offset(skip).limit(limit).all()
 
 def get_pedido(db: Session, pedido_id: int):
-    return db.query(Pedido).filter(Pedido.id_pedido == pedido_id).first()
+    pedido = db.query(Pedido).filter(Pedido.id_pedido == pedido_id).first()
+    if not pedido:
+        return None
+
+    # Get enhanced data
+    proveedor = db.query(Proveedor).filter(Proveedor.id_proveedor == pedido.id_proveedor).first()
+    usuario = db.query(Usuario).filter(Usuario.id_usuario == pedido.id_usuario).first()
+    estado = db.query(EstadoPedido).filter(EstadoPedido.id_estado_pedido == pedido.id_estado_pedido).first()
+    motivo = db.query(MotivoPedido).filter(MotivoPedido.id_motivo_pedido == pedido.id_motivo_pedido).first()
+
+    # Get detalles with product info
+    detalles = db.query(DetallePedido, Producto).join(
+        Producto, DetallePedido.id_producto == Producto.id_producto
+    ).filter(DetallePedido.id_pedido == pedido_id).all()
+
+    # Build response
+    return {
+        "id_pedido": pedido.id_pedido,
+        "id_proveedor": pedido.id_proveedor,
+        "id_usuario": pedido.id_usuario,
+        "id_estado_pedido": pedido.id_estado_pedido,
+        "id_motivo_pedido": pedido.id_motivo_pedido,
+        "fecha_solicitud": pedido.fecha_solicitud,
+        "fecha_entrega_estimada": pedido.fecha_entrega_estimada,
+        "motivo": pedido.motivo,
+        "proveedor": {
+            "razon_social": proveedor.razon_social if proveedor else None,
+            "ruc": proveedor.ruc if proveedor else None
+        },
+        "usuario": {
+            "nombres": usuario.nombres if usuario else None,
+            "apellido_paterno": usuario.apellido_paterno if usuario else None
+        },
+        "estado": {
+            "descripcion": estado.descripcion if estado else None
+        },
+        "motivo_descripcion": motivo.descripcion if motivo else None,
+        "detalles": [
+            {
+                "id_producto": detalle.DetallePedido.id_producto,
+                "nombre_comercial": detalle.Producto.nombre_comercial,
+                "cantidad_solicitada": detalle.DetallePedido.cantidad_solicitada,
+                "precio_venta": float(detalle.Producto.precio_venta)
+            }
+            for detalle in detalles
+        ]
+    }
+
 
 def create_pedido(db: Session, pedido: schemas.PedidoCreate, usuario_id: int):
     db_pedido = Pedido(
@@ -467,7 +514,7 @@ def create_pedido(db: Session, pedido: schemas.PedidoCreate, usuario_id: int):
     )
     db.add(db_pedido)
     db.flush()
-    
+
     # Add details
     for detalle in pedido.detalles:
         db_detalle = DetallePedido(
@@ -476,16 +523,17 @@ def create_pedido(db: Session, pedido: schemas.PedidoCreate, usuario_id: int):
             cantidad_solicitada=detalle.cantidad_solicitada
         )
         db.add(db_detalle)
-    
+
     db.commit()
     db.refresh(db_pedido)
     return db_pedido
 
 def update_pedido_estado(db: Session, pedido_id: int, estado_id: int):
-    db_pedido = get_pedido(db, pedido_id)
+    # FIXED: Query Pedido object directly instead of using get_pedido (which returns dict)
+    db_pedido = db.query(Pedido).filter(Pedido.id_pedido == pedido_id).first()
     if not db_pedido:
         return None
-    
+
     db_pedido.id_estado_pedido = estado_id
     db.commit()
     db.refresh(db_pedido)

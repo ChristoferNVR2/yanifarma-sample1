@@ -342,7 +342,7 @@ def get_pedidos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_pedidos(db, skip=skip, limit=limit)
 
 
-@app.get("/api/pedidos/{pedido_id}", response_model=schemas.Pedido)
+@app.get("/api/pedidos/{pedido_id}", response_model=schemas.PedidoDetalle)
 def get_pedido(pedido_id: int, db: Session = Depends(get_db)):
     db_pedido = crud.get_pedido(db, pedido_id)
     if not db_pedido:

@@ -277,6 +277,38 @@ class Pedido(PedidoBase):
     id_usuario: int
     model_config = ConfigDict(from_attributes=True)
 
+class ProveedorInfo(BaseModel):
+    razon_social: Optional[str] = None
+    ruc: Optional[str] = None
+
+class UsuarioInfo(BaseModel):
+    nombres: Optional[str] = None
+    apellido_paterno: Optional[str] = None
+
+class EstadoInfo(BaseModel):
+    descripcion: Optional[str] = None
+
+class ProductoDetalle(BaseModel):
+    id_producto: int
+    nombre_comercial: str
+    cantidad_solicitada: int
+    precio_venta: float
+
+class PedidoDetalle(BaseModel):
+    id_pedido: int
+    id_proveedor: int
+    id_usuario: int
+    id_estado_pedido: int
+    id_motivo_pedido: int
+    fecha_solicitud: date
+    fecha_entrega_estimada: Optional[date] = None
+    motivo: Optional[str] = None
+    proveedor: ProveedorInfo
+    usuario: UsuarioInfo
+    estado: EstadoInfo
+    motivo_descripcion: Optional[str] = None
+    detalles: List[ProductoDetalle]
+
 
 # ==================== COMPRA ====================
 class CompraBase(BaseModel):
