@@ -13,7 +13,7 @@ interface TableProps<T> {
 	emptyMessage?: string;
 }
 
-const Table = <T extends Record<string, unknown>>({
+const Table = <T,>({
 	data,
 	columns,
 	onRowClick,
