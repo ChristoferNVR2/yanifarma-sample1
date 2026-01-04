@@ -19,15 +19,15 @@ const Sidebar = () => {
 	];
 
 	return (
-		<aside className="w-64 bg-white shadow-lg">
+		<aside className='w-64 bg-white shadow-lg'>
 			{/* Logo */}
-			<div className="h-16 flex items-center justify-center border-b border-gray-200">
-				<h1 className="text-2xl font-bold text-primary-600">Yanifarma</h1>
+			<div className='h-16 flex items-center justify-center border-b border-gray-200'>
+				<h1 className='text-2xl font-bold text-primary-600'>Yanifarma</h1>
 			</div>
 
 			{/* Navigation */}
-			<nav className="p-4 space-y-2">
-				{menuItems.map((item) => (
+			<nav className='p-4 space-y-2'>
+				{menuItems.map(item => (
 					<NavLink
 						key={item.path}
 						to={item.path}
