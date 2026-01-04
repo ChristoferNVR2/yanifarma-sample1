@@ -7,6 +7,7 @@ import {
 	Truck,
 	ShoppingCart,
 	ClipboardList,
+	FileText,
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -15,6 +16,7 @@ const Sidebar = () => {
 		{ path: '/products', icon: Package, label: 'Productos' },
 		{ path: '/inventory', icon: Warehouse, label: 'Inventario' },
 		{ path: '/pedidos', icon: ClipboardList, label: 'Pedidos' },
+		{ path: '/compras', icon: FileText, label: 'Compras' },
 		{ path: '/customers', icon: Users, label: 'Clientes' },
 		{ path: '/suppliers', icon: Truck, label: 'Proveedores' },
 		{ path: '/sales', icon: ShoppingCart, label: 'Ventas' },

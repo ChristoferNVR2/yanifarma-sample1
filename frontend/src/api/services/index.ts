@@ -4,3 +4,4 @@ export { customersService } from './customers';
 export { suppliersService } from './suppliers';
 export { salesService } from './sales';
 export { pedidosService } from './pedidos';
+export { comprasService } from './compras';
