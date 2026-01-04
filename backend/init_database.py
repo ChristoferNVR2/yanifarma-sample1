@@ -219,7 +219,9 @@ def populate_sample_data():
             {"id_categoria": 40001, "nombre_categoria": "Analgésico"},
             {"id_categoria": 40002, "nombre_categoria": "Antibiótico"},
             {"id_categoria": 40003, "nombre_categoria": "Antiinflamatorio"},
-            {"id_categoria": 40004, "nombre_categoria": "Antialérgico"}
+            {"id_categoria": 40004, "nombre_categoria": "Antialérgico"},
+            {"id_categoria": 40005, "nombre_categoria": "Vitaminas"},
+            {"id_categoria": 40006, "nombre_categoria": "Digestivo"}
         ]
         for data in categorias_data:
             if not db.query(Categoria).filter_by(id_categoria=data["id_categoria"]).first():
@@ -232,7 +234,9 @@ def populate_sample_data():
         presentaciones_data = [
             {"id_presentacion": 400001, "desc_presentacion": "Caja x 10 tabletas"},
             {"id_presentacion": 400002, "desc_presentacion": "Caja x 12 cápsulas"},
-            {"id_presentacion": 400003, "desc_presentacion": "Frasco x 120 ml"}
+            {"id_presentacion": 400003, "desc_presentacion": "Frasco x 120 ml"},
+            {"id_presentacion": 400004, "desc_presentacion": "Caja x 20 tabletas"},
+            {"id_presentacion": 400005, "desc_presentacion": "Blister x 30 cápsulas"}
         ]
         for data in presentaciones_data:
             if not db.query(Presentacion).filter_by(id_presentacion=data["id_presentacion"]).first():
@@ -246,7 +250,9 @@ def populate_sample_data():
             {"id_componente": 4000001, "nombre_componente": "Paracetamol 500 mg"},
             {"id_componente": 4000002, "nombre_componente": "Amoxicilina trihidratada 500 mg"},
             {"id_componente": 4000003, "nombre_componente": "Ibuprofeno 400 mg"},
-            {"id_componente": 4000004, "nombre_componente": "Loratadina 10 mg"}
+            {"id_componente": 4000004, "nombre_componente": "Loratadina 10 mg"},
+            {"id_componente": 4000005, "nombre_componente": "Vitamina C 1000 mg"},
+            {"id_componente": 4000006, "nombre_componente": "Omeprazol 20 mg"}
         ]
         for data in componentes_data:
             if not db.query(Componente).filter_by(id_componente=data["id_componente"]).first():
@@ -289,6 +295,22 @@ def populate_sample_data():
                 "precio_venta": Decimal("6.00"),
                 "afecta_igv": True,
                 "requiere_receta": False
+            },
+            {
+                "id_producto": 4005,
+                "codigo_interno": "P-005",
+                "nombre_comercial": "Vitamina C 1000 mg",
+                "precio_venta": Decimal("15.00"),
+                "afecta_igv": True,
+                "requiere_receta": False
+            },
+            {
+                "id_producto": 4006,
+                "codigo_interno": "P-006",
+                "nombre_comercial": "Omeprazol 20 mg",
+                "precio_venta": Decimal("8.50"),
+                "afecta_igv": True,
+                "requiere_receta": True
             }
         ]
         for data in productos_data:
@@ -300,10 +322,12 @@ def populate_sample_data():
         # 13. PRODUCTO-CATEGORIA
         print("13. Assigning categories to products...")
         prod_cat_data = [
-            {"id_producto": 4001, "id_categoria": 40001},
-            {"id_producto": 4002, "id_categoria": 40002},
-            {"id_producto": 4003, "id_categoria": 40003},
-            {"id_producto": 4004, "id_categoria": 40004}
+            {"id_producto": 4001, "id_categoria": 40001},  # Paracetamol -> Analgésico
+            {"id_producto": 4002, "id_categoria": 40002},  # Amoxicilina -> Antibiótico
+            {"id_producto": 4003, "id_categoria": 40003},  # Ibuprofeno -> Antiinflamatorio
+            {"id_producto": 4004, "id_categoria": 40004},  # Loratadina -> Antialérgico
+            {"id_producto": 4005, "id_categoria": 40005},  # Vitamina C -> Vitaminas
+            {"id_producto": 4006, "id_categoria": 40006},  # Omeprazol -> Digestivo
         ]
         for data in prod_cat_data:
             if not db.query(ProductoCategoria).filter_by(**data).first():
@@ -317,7 +341,9 @@ def populate_sample_data():
             {"id_producto": 4001, "id_presentacion": 400001},
             {"id_producto": 4002, "id_presentacion": 400002},
             {"id_producto": 4003, "id_presentacion": 400001},
-            {"id_producto": 4004, "id_presentacion": 400001}
+            {"id_producto": 4004, "id_presentacion": 400004},
+            {"id_producto": 4005, "id_presentacion": 400005},
+            {"id_producto": 4006, "id_presentacion": 400002}
         ]
         for data in prod_pres_data:
             if not db.query(ProductoPresentacion).filter_by(**data).first():
@@ -331,7 +357,9 @@ def populate_sample_data():
             {"id_producto": 4001, "id_componente": 4000001},
             {"id_producto": 4002, "id_componente": 4000002},
             {"id_producto": 4003, "id_componente": 4000003},
-            {"id_producto": 4004, "id_componente": 4000004}
+            {"id_producto": 4004, "id_componente": 4000004},
+            {"id_producto": 4005, "id_componente": 4000005},
+            {"id_producto": 4006, "id_componente": 4000006}
         ]
         for data in prod_comp_data:
             if not db.query(ProductoComponente).filter_by(**data).first():
@@ -344,8 +372,10 @@ def populate_sample_data():
         ubicaciones_data = [
             {"id_ubicacion_estante": 50001, "estante": "A1", "nivel": "Nivel 1"},
             {"id_ubicacion_estante": 50002, "estante": "A2", "nivel": "Nivel 2"},
-            {"id_ubicacion_estante": 50003, "estante": "B1", "nivel": "Nivel 3"},
-            {"id_ubicacion_estante": 50004, "estante": "B2", "nivel": "Nivel 1"}
+            {"id_ubicacion_estante": 50003, "estante": "A3", "nivel": "Nivel 1"},
+            {"id_ubicacion_estante": 50004, "estante": "B1", "nivel": "Nivel 3"},
+            {"id_ubicacion_estante": 50005, "estante": "B2", "nivel": "Nivel 1"},
+            {"id_ubicacion_estante": 50006, "estante": "C1", "nivel": "Nivel 2"}
         ]
         for data in ubicaciones_data:
             if not db.query(UbicacionEstante).filter_by(id_ubicacion_estante=data["id_ubicacion_estante"]).first():
@@ -353,41 +383,63 @@ def populate_sample_data():
         db.commit()
         print(f"   ✓ {len(ubicaciones_data)} locations created")
         
-        # 17. LOTES
+        # 17. LOTES (with varied expiration dates and stock levels)
         print("17. Creating product batches...")
         from datetime import date
         lotes_data = [
+            # Paracetamol - High stock, good expiration
             {
                 "id_lote": 5001,
                 "id_producto": 4001,
-                "codigo_lote": "L-2025-01",
-                "fecha_vencimiento": date(2026, 2, 15),
-                "cantidad_recibida": 120,
+                "codigo_lote": "L-2025-01-PAR",
+                "fecha_vencimiento": date(2026, 6, 15),
+                "cantidad_recibida": 200,
                 "costo_unitario_compra": Decimal("2.10")
             },
+            # Amoxicilina - Low stock, near expiration (WARNING!)
             {
                 "id_lote": 5002,
                 "id_producto": 4002,
-                "codigo_lote": "L-2025-02",
-                "fecha_vencimiento": date(2025, 12, 30),
-                "cantidad_recibida": 80,
+                "codigo_lote": "L-2024-11-AMO",
+                "fecha_vencimiento": date(2025, 3, 30),
+                "cantidad_recibida": 100,
                 "costo_unitario_compra": Decimal("9.00")
             },
+            # Ibuprofeno - Medium stock
             {
                 "id_lote": 5003,
                 "id_producto": 4003,
-                "codigo_lote": "L-2025-03",
-                "fecha_vencimiento": date(2026, 4, 10),
-                "cantidad_recibida": 100,
+                "codigo_lote": "L-2025-02-IBU",
+                "fecha_vencimiento": date(2026, 8, 10),
+                "cantidad_recibida": 150,
                 "costo_unitario_compra": Decimal("3.90")
             },
+            # Loratadina - Low stock (needs reorder)
             {
                 "id_lote": 5004,
                 "id_producto": 4004,
-                "codigo_lote": "L-2025-04",
-                "fecha_vencimiento": date(2026, 8, 20),
-                "cantidad_recibida": 60,
+                "codigo_lote": "L-2025-01-LOR",
+                "fecha_vencimiento": date(2026, 12, 20),
+                "cantidad_recibida": 80,
                 "costo_unitario_compra": Decimal("4.50")
+            },
+            # Vitamina C - High stock
+            {
+                "id_lote": 5005,
+                "id_producto": 4005,
+                "codigo_lote": "L-2025-03-VIT",
+                "fecha_vencimiento": date(2027, 1, 15),
+                "cantidad_recibida": 300,
+                "costo_unitario_compra": Decimal("10.00")
+            },
+            # Omeprazol - EXPIRED (for testing)
+            {
+                "id_lote": 5006,
+                "id_producto": 4006,
+                "codigo_lote": "L-2024-05-OME",
+                "fecha_vencimiento": date(2024, 12, 31),
+                "cantidad_recibida": 50,
+                "costo_unitario_compra": Decimal("6.00")
             }
         ]
         for data in lotes_data:
@@ -396,13 +448,21 @@ def populate_sample_data():
         db.commit()
         print(f"   ✓ {len(lotes_data)} batches created")
         
-        # 18. INVENTARIO
+        # 18. INVENTARIO (with varied stock levels for testing filters)
         print("18. Creating inventory records...")
         inventario_data = [
-            {"id_inventario": 1, "id_lote": 5001, "id_ubicacion_estante": 50001, "stock_actual": 120},
-            {"id_inventario": 2, "id_lote": 5002, "id_ubicacion_estante": 50002, "stock_actual": 80},
-            {"id_inventario": 3, "id_lote": 5003, "id_ubicacion_estante": 50003, "stock_actual": 100},
-            {"id_inventario": 4, "id_lote": 5004, "id_ubicacion_estante": 50004, "stock_actual": 60}
+            # High stock
+            {"id_inventario": 1, "id_lote": 5001, "id_ubicacion_estante": 50001, "stock_actual": 180},  # Paracetamol - HIGH
+            # Low stock - near expiration
+            {"id_inventario": 2, "id_lote": 5002, "id_ubicacion_estante": 50002, "stock_actual": 15},   # Amoxicilina - LOW + NEAR EXPIRATION
+            # Medium stock
+            {"id_inventario": 3, "id_lote": 5003, "id_ubicacion_estante": 50003, "stock_actual": 45},   # Ibuprofeno - MEDIUM
+            # Low stock
+            {"id_inventario": 4, "id_lote": 5004, "id_ubicacion_estante": 50004, "stock_actual": 18},   # Loratadina - LOW
+            # High stock
+            {"id_inventario": 5, "id_lote": 5005, "id_ubicacion_estante": 50005, "stock_actual": 250},  # Vitamina C - HIGH
+            # Expired product
+            {"id_inventario": 6, "id_lote": 5006, "id_ubicacion_estante": 50006, "stock_actual": 35},   # Omeprazol - EXPIRED
         ]
         for data in inventario_data:
             if not db.query(Inventario).filter_by(id_inventario=data["id_inventario"]).first():
@@ -593,6 +653,15 @@ def populate_sample_data():
         print("=" * 60)
         print("✅ SAMPLE DATA POPULATED SUCCESSFULLY!")
         print("=" * 60)
+        print()
+        print("📊 INVENTORY SUMMARY:")
+        print("   • Paracetamol: 180 units (HIGH) - Good expiration")
+        print("   • Amoxicilina: 15 units (LOW) - ⚠️  Near expiration!")
+        print("   • Ibuprofeno: 45 units (MEDIUM)")
+        print("   • Loratadina: 18 units (LOW)")
+        print("   • Vitamina C: 250 units (HIGH)")
+        print("   • Omeprazol: 35 units - ❌ EXPIRED!")
+        print()
         
     except Exception as e:
         db.rollback()
@@ -625,6 +694,7 @@ def verify_data():
             "Proveedores": db.query(Proveedor).count(),
             "Productos": db.query(Producto).count(),
             "Categorías": db.query(Categoria).count(),
+            "Lotes": db.query(Lote).count(),
             "Inventario": db.query(Inventario).count(),
             "Pedidos": db.query(Pedido).count(),
             "Ventas": db.query(Venta).count(),
