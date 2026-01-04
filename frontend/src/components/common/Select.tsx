@@ -1,4 +1,4 @@
-import { SelectHTMLAttributes, forwardRef } from 'react';
+import { SelectHTMLAttributes, forwardRef, ReactNode } from 'react';
 
 interface SelectOption {
 	value: string | number;
@@ -8,12 +8,16 @@ interface SelectOption {
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 	label?: string;
 	error?: string;
-	options: SelectOption[];
+	options?: SelectOption[]; // Make optional
 	placeholder?: string;
+	children?: ReactNode; // Allow children
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-	({ label, error, options, placeholder, className = '', ...props }, ref) => {
+	(
+		{ label, error, options, placeholder, className = '', children, ...props },
+		ref,
+	) => {
 		return (
 			<div className='w-full'>
 				{label && (
@@ -34,16 +38,23 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 					`}
 					{...props}
 				>
-					{placeholder && (
-						<option value='' disabled>
-							{placeholder}
-						</option>
+					{/* Support both patterns: options prop OR children */}
+					{options ? (
+						<>
+							{placeholder && (
+								<option value='' disabled>
+									{placeholder}
+								</option>
+							)}
+							{options.map(option => (
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							))}
+						</>
+					) : (
+						children
 					)}
-					{options.map(option => (
-						<option key={option.value} value={option.value}>
-							{option.label}
-						</option>
-					))}
 				</select>
 
 				{error && <p className='mt-1 text-sm text-danger-600'>{error}</p>}

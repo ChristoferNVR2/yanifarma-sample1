@@ -9,6 +9,10 @@ import CustomerForm from './pages/customers/CustomerForm';
 import SuppliersList from './pages/suppliers/SuppliersList';
 import SupplierForm from './pages/suppliers/SupplierForm';
 import SalesHistory from './pages/sales/SalesHistory';
+import PedidosList from './pages/pedidos/PedidosList';
+import PedidoForm from './pages/pedidos/PedidoForm';
+import PedidoDetails from './pages/pedidos/PedidoDetails';
+import PedidoEdit from './pages/pedidos/PedidoEdit';
 
 function App() {
 	return (
@@ -24,6 +28,12 @@ function App() {
 
 				{/* Inventory */}
 				<Route path='inventory' element={<InventoryList />} />
+
+				{/* Pedidos (Orders to Suppliers) */}
+				<Route path='pedidos' element={<PedidosList />} />
+				<Route path='pedidos/new' element={<PedidoForm />} />
+				<Route path='pedidos/:id' element={<PedidoDetails />} />
+				<Route path='pedidos/edit/:id' element={<PedidoEdit />} />
 
 				{/* Customers */}
 				<Route path='customers' element={<CustomersList />} />
