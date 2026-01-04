@@ -11,7 +11,7 @@ const api = axios.create({
 
 // Request interceptor (for future auth tokens)
 api.interceptors.request.use(
-	(config) => {
+	config => {
 		// You can add auth token here later
 		// const token = localStorage.getItem('token');
 		// if (token) {
@@ -19,28 +19,35 @@ api.interceptors.request.use(
 		// }
 		return config;
 	},
-	(error) => {
-		return Promise.reject(error);
-	}
+	(error: unknown) => {
+		return Promise.reject(
+			error instanceof Error ? error : new Error(String(error)),
+		);
+	},
 );
 
 // Response interceptor (for error handling)
 api.interceptors.response.use(
-	(response) => response,
-	(error) => {
+	response => response,
+	(error: unknown) => {
 		// Handle common errors
-		if (error.response) {
-			// Server responded with error status
-			console.error('API Error:', error.response.data);
-		} else if (error.request) {
-			// Request made but no response
-			console.error('Network Error:', error.message);
-		} else {
-			// Something else happened
-			console.error('Error:', error.message);
+		if (axios.isAxiosError(error)) {
+			if (error.response) {
+				// Server responded with error status
+				console.error('API Error:', error.response.data);
+			} else if (error.request) {
+				// Request made but no response
+				console.error('Network Error:', error.message);
+			} else {
+				// Something else happened
+				console.error('Error:', error.message);
+			}
+			return Promise.reject(error);
 		}
-		return Promise.reject(error);
-	}
+		return Promise.reject(
+			error instanceof Error ? error : new Error(String(error)),
+		);
+	},
 );
 
 export default api;
