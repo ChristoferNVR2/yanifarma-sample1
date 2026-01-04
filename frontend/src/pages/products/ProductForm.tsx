@@ -232,10 +232,22 @@ const ProductForm = () => {
 		if (!window.confirm(`¿Estás seguro de eliminar la categoría "${nombre}"?`)) return;
 
 		try {
-			// Note: You'll need to add delete endpoints to your API service
-			await fetch(`http://localhost:8000/api/categorias/${categoriaId}`, {
+			const response = await fetch(`http://localhost:8000/api/categorias/${categoriaId}`, {
 				method: 'DELETE',
 			});
+
+			if (!response.ok) {
+				// Handle different error cases
+				if (response.status === 500) {
+					toast.error(
+						'No se puede eliminar la categoría porque está siendo usada por productos',
+					);
+				} else {
+					const errorData = await response.json();
+					toast.error(errorData.detail || 'Error al eliminar categoría');
+				}
+				return;
+			}
 
 			toast.success('Categoría eliminada exitosamente');
 
@@ -255,9 +267,22 @@ const ProductForm = () => {
 		if (!window.confirm(`¿Estás seguro de eliminar la presentación "${desc}"?`)) return;
 
 		try {
-			await fetch(`http://localhost:8000/api/presentaciones/${presentacionId}`, {
+			const response = await fetch(`http://localhost:8000/api/presentaciones/${presentacionId}`, {
 				method: 'DELETE',
 			});
+
+			if (!response.ok) {
+				// Handle different error cases
+				if (response.status === 500) {
+					toast.error(
+						'No se puede eliminar la presentación porque está siendo usada por productos',
+					);
+				} else {
+					const errorData = await response.json();
+					toast.error(errorData.detail || 'Error al eliminar presentación');
+				}
+				return;
+			}
 
 			toast.success('Presentación eliminada exitosamente');
 
@@ -277,9 +302,22 @@ const ProductForm = () => {
 		if (!window.confirm(`¿Estás seguro de eliminar el componente "${nombre}"?`)) return;
 
 		try {
-			await fetch(`http://localhost:8000/api/componentes/${componenteId}`, {
+			const response = await fetch(`http://localhost:8000/api/componentes/${componenteId}`, {
 				method: 'DELETE',
 			});
+
+			if (!response.ok) {
+				// Handle different error cases
+				if (response.status === 500) {
+					toast.error(
+						'No se puede eliminar el componente porque está siendo usado por productos',
+					);
+				} else {
+					const errorData = await response.json();
+					toast.error(errorData.detail || 'Error al eliminar componente');
+				}
+				return;
+			}
 
 			toast.success('Componente eliminado exitosamente');
 
@@ -309,9 +347,7 @@ const ProductForm = () => {
 
 			navigate('/products');
 		} catch (error) {
-			toast.error(
-				isEditMode ? 'Error al actualizar producto' : 'Error al crear producto',
-			);
+			toast.error(isEditMode ? 'Error al actualizar producto' : 'Error al crear producto');
 			console.error('Error saving product:', error);
 		} finally {
 			setLoading(false);
@@ -386,9 +422,7 @@ const ProductForm = () => {
 											{...register('afecta_igv')}
 											className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
 										/>
-										<span className="text-sm font-medium text-gray-700">
-											Afecta IGV
-										</span>
+										<span className="text-sm font-medium text-gray-700">Afecta IGV</span>
 									</label>
 
 									<label className="flex items-center space-x-2">
