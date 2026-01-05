@@ -13,6 +13,10 @@ import PedidosList from './pages/pedidos/PedidosList';
 import PedidoForm from './pages/pedidos/PedidoForm';
 import PedidoDetails from './pages/pedidos/PedidoDetails';
 import PedidoEdit from './pages/pedidos/PedidoEdit';
+import ComprasList from './pages/compras/ComprasList';
+import CompraForm from './pages/compras/CompraForm';
+import CompraDetails from './pages/compras/CompraDetails';
+import CompraEdit from './pages/compras/CompraEdit';
 
 function App() {
 	return (
@@ -34,6 +38,12 @@ function App() {
 				<Route path='pedidos/new' element={<PedidoForm />} />
 				<Route path='pedidos/:id' element={<PedidoDetails />} />
 				<Route path='pedidos/edit/:id' element={<PedidoEdit />} />
+
+				{/* Compras (Purchase Receipts) */}
+				<Route path='compras' element={<ComprasList />} />
+				<Route path='compras/new' element={<CompraForm />} />
+				<Route path='compras/:id' element={<CompraDetails />} />
+				<Route path='compras/edit/:id' element={<CompraEdit />} />
 
 				{/* Customers */}
 				<Route path='customers' element={<CustomersList />} />
