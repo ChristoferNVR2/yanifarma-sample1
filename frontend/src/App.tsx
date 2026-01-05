@@ -14,6 +14,9 @@ import PedidoForm from './pages/pedidos/PedidoForm';
 import PedidoDetails from './pages/pedidos/PedidoDetails';
 import PedidoEdit from './pages/pedidos/PedidoEdit';
 import ComprasList from './pages/compras/ComprasList';
+import CompraForm from './pages/compras/CompraForm';
+import CompraDetails from './pages/compras/CompraDetails';
+import CompraEdit from './pages/compras/CompraEdit';
 
 function App() {
 	return (
@@ -38,9 +41,9 @@ function App() {
 
 				{/* Compras (Purchase Receipts) */}
 				<Route path='compras' element={<ComprasList />} />
-				<Route path='compras/new' element={<div>Nueva Compra - Coming Soon</div>} />
-				<Route path='compras/:id' element={<div>Ver Compra - Coming Soon</div>} />
-				<Route path='compras/edit/:id' element={<div>Editar Compra - Coming Soon</div>} />
+				<Route path='compras/new' element={<CompraForm />} />
+				<Route path='compras/:id' element={<CompraDetails />} />
+				<Route path='compras/edit/:id' element={<CompraEdit />} />
 
 				{/* Customers */}
 				<Route path='customers' element={<CustomersList />} />
