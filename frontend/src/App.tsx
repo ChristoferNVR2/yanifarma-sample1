@@ -9,6 +9,9 @@ import CustomerForm from './pages/customers/CustomerForm';
 import SuppliersList from './pages/suppliers/SuppliersList';
 import SupplierForm from './pages/suppliers/SupplierForm';
 import SalesHistory from './pages/sales/SalesHistory';
+import SaleDetails from './pages/sales/SaleDetails';
+import SaleForm from './pages/sales/SaleForm';
+import SaleEdit from './pages/sales/SaleEdit';
 import PedidosList from './pages/pedidos/PedidosList';
 import PedidoForm from './pages/pedidos/PedidoForm';
 import PedidoDetails from './pages/pedidos/PedidoDetails';
@@ -45,6 +48,12 @@ function App() {
 				<Route path='compras/:id' element={<CompraDetails />} />
 				<Route path='compras/edit/:id' element={<CompraEdit />} />
 
+				{/* Sales */}
+				<Route path='sales' element={<SalesHistory />} />
+				<Route path='sales/new' element={<SaleForm />} />
+				<Route path='sales/:id' element={<SaleDetails />} />
+				<Route path='sales/edit/:id' element={<SaleEdit />} />
+
 				{/* Customers */}
 				<Route path='customers' element={<CustomersList />} />
 				<Route path='customers/new' element={<CustomerForm />} />
@@ -54,9 +63,6 @@ function App() {
 				<Route path='suppliers' element={<SuppliersList />} />
 				<Route path='suppliers/new' element={<SupplierForm />} />
 				<Route path='suppliers/edit/:id' element={<SupplierForm />} />
-
-				{/* Sales */}
-				<Route path='sales' element={<SalesHistory />} />
 
 				{/* 404 */}
 				<Route path='*' element={<Navigate to='/dashboard' replace />} />
