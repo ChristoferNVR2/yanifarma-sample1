@@ -2,26 +2,6 @@
 
 Sistema completo de gestión para farmacias con FastAPI, React y MySQL.
 
-## 📁 Project Structure
-
-```
-yanifarma-sample1/
-├── backend/                   # FastAPI Backend
-│   ├── app/
-│   │   ├── models/           # 27 database tables (3NF)
-│   │   ├── schemas.py        # Pydantic models
-│   │   ├── crud.py           # Database operations
-│   │   ├── app.py            # FastAPI app (60+ endpoints)
-│   │   └── database.py       # DB configuration
-│   ├── init_database.py      # Database setup script
-│   ├── test_api.py           # API test script
-│   └── main.py               # Entry point
-│
-├── frontend/                  # React Frontend
-├── docker-compose.yml         # Docker orchestration
-└── README.md                  # This file
-```
-
 ## 🚀 Quick Start
 
 ### 1. Start Docker Containers
@@ -48,15 +28,8 @@ This will:
 - ✓ Populate 100+ sample records
 - ✓ Verify data was loaded correctly
 
-### 3. Test API Endpoints
 
-```bash
-docker exec backend uv run python test_api.py
-```
-
-This tests all 40+ endpoints to ensure everything works.
-
-### 4. Access the API
+### 3. Access the API
 
 Open in your browser:
 - **Interactive API Docs**: http://localhost:8000/docs
