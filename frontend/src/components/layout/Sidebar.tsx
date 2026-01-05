@@ -12,13 +12,10 @@ import {
 
 const Sidebar = () => {
 	const menuItems = [
-		{ path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
 		{ path: '/products', icon: Package, label: 'Productos' },
 		{ path: '/inventory', icon: Warehouse, label: 'Inventario' },
 		{ path: '/pedidos', icon: ClipboardList, label: 'Pedidos' },
 		{ path: '/compras', icon: FileText, label: 'Compras' },
-		{ path: '/customers', icon: Users, label: 'Clientes' },
-		{ path: '/suppliers', icon: Truck, label: 'Proveedores' },
 		{ path: '/sales', icon: ShoppingCart, label: 'Ventas' },
 	];
 
